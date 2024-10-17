@@ -1,251 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>State Selector - Extra Credit</title>
-  <style>
-    /* Basic styling for layout and aesthetics */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f4f4f4;
-    }
-    .container {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-    }
-    select {
-      width: 200px;
-      height: 220px; /* Adjust height to display multiple options */
-      padding: 5px;
-      font-size: 16px;
-    }
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    #addStateButton, #clearButton {
-      padding: 8px 16px;
-      font-size: 14px;
-      background-color: #008CBA;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    #addStateButton:hover {
-      background-color: #006f98;
-    }
-    #clearButton {
-      background-color: #f44336;
-    }
-    #clearButton:hover {
-      background-color: #d32f2f;
-    }
-    h2 {
-      color: #333;
-    }
-    #selectedStatesContainer {
-      margin-top: 30px;
-      padding: 15px;
-      border: 2px solid #4CAF50;
-      border-radius: 5px;
-      width: 300px;
-      min-height: 100px;
-      overflow-y: auto;
-      background-color: #fff;
-    }
-    #selectedStatesContainer h2 {
-      margin-top: 0;
-      color: #333;
-    }
-    #selectedStatesList {
-      list-style-type: decimal; /* Numbered list */
-      padding-left: 20px;
-    }
-    .state-item {
-      padding: 5px 0;
-      border-bottom: 1px solid #ddd;
-    }
-    .state-item:last-child {
-      border-bottom: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Selector - Extra Credit</title>
+    <script>
+        // JavaScript to populate <select> list, handle adding, removing, and clearing states
+        window.onload = function() {
+            // Array of states
+            const states = ["California", "Texas", "Florida", "New York", "Illinois", "Pennsylvania", "Ohio", "Georgia", "North Carolina", "Michigan"];
+            
+            // Populate the <select> element with <option> elements
+            const stateSelect = document.getElementById("stateSelect");
+            function populateSelect() {
+                stateSelect.innerHTML = ""; // Clear the current list
+                states.forEach(state => {
+                    let option = document.createElement("option");
+                    option.value = state;
+                    option.textContent = state;
+                    stateSelect.appendChild(option);
+                });
+            }
+            populateSelect();
+
+            // Add event listener for "Add State" button
+            document.getElementById("addStateButton").onclick = function() {
+                let selectedState = stateSelect.value;
+                if (selectedState) {
+                    // Add the state to the div
+                    let stateDiv = document.getElementById("selectedStates");
+                    let count = stateDiv.children.length + 1; // Number the list
+                    let listItem = document.createElement("div");
+                    listItem.textContent = count + ". " + selectedState;
+                    stateDiv.appendChild(listItem);
+
+                    // Remove the selected state from the select list
+                    const index = states.indexOf(selectedState);
+                    if (index > -1) {
+                        states.splice(index, 1); // Remove from states array
+                    }
+                    populateSelect(); // Repopulate the select list
+                }
+            };
+
+            // Add event listener for "Clear States" button
+            document.getElementById("clearStatesButton").onclick = function() {
+                document.getElementById("selectedStates").innerHTML = "";
+                populateSelect(); // Restore the original list of states
+            };
+        };
+    </script>
 </head>
 <body>
+    <h2>Select a State</h2>
 
-  <h1>State Selector - Extra Credit</h1>
+    <!-- Select element displaying a list (not a dropdown) -->
+    <select id="stateSelect" size="10"></select>
+    <button id="addStateButton" type="button">Add State</button>
 
-  <div class="container">
-    <!-- Select Element Displayed as a List -->
-    <select id="stateSelect" size="10">
-      <!-- Options will be populated by JavaScript -->
-    </select>
+    <br><br>
 
-    <!-- Buttons Container -->
-    <div class="buttons">
-      <button type="button" id="addStateButton">Add State</button>
-      <button type="button" id="clearButton">Clear States</button>
-    </div>
-  </div>
-
-  <!-- Div to Display Selected States as a Numbered List -->
-  <div id="selectedStatesContainer">
-    <h2>Selected States:</h2>
-    <ol id="selectedStatesList">
-      <!-- Selected states will appear here as list items -->
-    </ol>
-  </div>
-
-  <script>
-    // JavaScript code to handle state selection and display
-
-    // Master array of U.S. states
-    const allStates = [
-      "Alabama",
-      "Alaska",
-      "Arizona",
-      "Arkansas",
-      "California",
-      "Colorado",
-      "Connecticut",
-      "Delaware",
-      "Florida",
-      "Georgia",
-      "Hawaii",
-      "Idaho",
-      "Illinois",
-      "Indiana",
-      "Iowa",
-      "Kansas",
-      "Kentucky",
-      "Louisiana",
-      "Maine",
-      "Maryland",
-      "Massachusetts",
-      "Michigan",
-      "Minnesota",
-      "Mississippi",
-      "Missouri",
-      "Montana",
-      "Nebraska",
-      "Nevada",
-      "New Hampshire",
-      "New Jersey",
-      "New Mexico",
-      "New York",
-      "North Carolina",
-      "North Dakota",
-      "Ohio",
-      "Oklahoma",
-      "Oregon",
-      "Pennsylvania",
-      "Rhode Island",
-      "South Carolina",
-      "South Dakota",
-      "Tennessee",
-      "Texas",
-      "Utah",
-      "Vermont",
-      "Virginia",
-      "Washington",
-      "West Virginia",
-      "Wisconsin",
-      "Wyoming"
-    ];
-
-    // Clone of allStates to manage the select list
-    let availableStates = [...allStates];
-
-    // Reference to the select element
-    const stateSelect = document.getElementById('stateSelect');
-
-    // Reference to the Add State button
-    const addStateButton = document.getElementById('addStateButton');
-
-    // Reference to the selected states list (ol)
-    const selectedStatesList = document.getElementById('selectedStatesList');
-
-    // Reference to the Clear States button
-    const clearButton = document.getElementById('clearButton');
-
-    /**
-     * Function to populate the select element with available states
-     */
-    function populateSelect() {
-      // Clear existing options
-      stateSelect.innerHTML = '';
-
-      // Iterate over availableStates and create option elements
-      availableStates.forEach((state, index) => {
-        const option = document.createElement('option');
-        option.value = state;
-        option.textContent = state;
-        // Select the first item by default
-        if (index === 0) {
-          option.selected = true;
-        }
-        stateSelect.appendChild(option);
-      });
-    }
-
-    /**
-     * Function to add the selected state to the list and remove it from the select
-     */
-    function addState() {
-      const selectedState = stateSelect.value;
-
-      if (!selectedState) {
-        alert("Please select a state to add.");
-        return;
-      }
-
-      // Check if the state is already added (redundant since it's removed from select)
-      // Create a new list item for the selected state
-      const listItem = document.createElement('li');
-      listItem.textContent = selectedState;
-      listItem.classList.add('state-item');
-
-      // Append the list item to the ordered list
-      selectedStatesList.appendChild(listItem);
-
-      // Remove the selected state from availableStates
-      availableStates = availableStates.filter(state => state !== selectedState);
-
-      // Repopulate the select list
-      populateSelect();
-    }
-
-    /**
-     * Function to clear all selected states and restore the select list
-     */
-    function clearStates() {
-      // Confirm with the user before clearing
-      const confirmClear = confirm("Are you sure you want to clear all selected states?");
-      if (!confirmClear) return;
-
-      // Clear the ordered list
-      selectedStatesList.innerHTML = '';
-
-      // Restore availableStates to include all states
-      availableStates = [...allStates];
-
-      // Repopulate the select list
-      populateSelect();
-    }
-
-    // Initial population of the select list on page load
-    window.onload = function() {
-      populateSelect();
-
-      // Assign event listeners to buttons
-      addStateButton.addEventListener('click', addState);
-      clearButton.addEventListener('click', clearStates);
-    };
-  </script>
+    <!-- Div with a border to display selected states -->
+    <div id="selectedStates" style="border: 1px solid black; padding: 10px; width: 200px; min-height: 50px;"></div>
+    <button id="clearStatesButton" type="button">Clear States</button>
 
 </body>
 </html>
