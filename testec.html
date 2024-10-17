@@ -8,7 +8,7 @@
         // JavaScript to populate <select> list, handle adding, removing, and clearing states
         window.onload = function() {
             // Array of states
-            const states = ["Massachusetts", "New Hamshire", "Rhode Island", "Maine", "Connecticut", "Vermont", "New York", "New Jersey", "North Carolina", "Maryland"];
+            const states = ["California", "Texas", "Florida", "New York", "Illinois", "Pennsylvania", "Ohio", "Georgia", "North Carolina", "Michigan"];
             
             // Populate the <select> element with <option> elements
             const stateSelect = document.getElementById("stateSelect");
@@ -29,9 +29,8 @@
                 if (selectedState) {
                     // Add the state to the div
                     let stateDiv = document.getElementById("selectedStates");
-                    let count = stateDiv.children.length + 1; // Number the list
                     let listItem = document.createElement("div");
-                    listItem.textContent = count + ". " + selectedState;
+                    listItem.textContent = selectedState;
                     stateDiv.appendChild(listItem);
 
                     // Remove the selected state from the select list
